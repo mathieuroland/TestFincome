@@ -13,7 +13,7 @@ index = 0
 
 #a class to store our Dataset
 class Dataset(BaseModel):
-    id_ds = index
+    id_ds = 0
     name = "test"
     dataframe: pandas.DataFrame = None
     class Config:
@@ -38,12 +38,14 @@ def datasets():
 def upload_file(file : UploadFile):
     global index
     ret = Dataset()
+    ret.id_ds = index
     index+=1
     namelist = file.filename.split(".")
     name = namelist[0]
     ret.name = name
     ret.dataframe = pandas.read_csv(file.filename)
     Store_DF.append(ret)
+    print(index)
     return ret.id_ds
 
 #return the file name, and size of the dataset object
