@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from pydantic import *
 from typing import List
 import pandas
@@ -9,9 +9,11 @@ import matplotlib.pyplot as plt
 app = FastAPI()
 
 
+index = 0
+
 #a class to store our Dataset
 class Dataset(BaseModel):
-    id_ds = 0
+    id_ds = index
     name = "test"
     dataframe: pandas.DataFrame = None
     class Config:
@@ -21,7 +23,7 @@ df = Dataset()
 d = {'col1': [1, 2], 'col2': [3, 4]}
 df1 = pandas.DataFrame(data=d)
 df.dataframe = df1
-Store_DF = [df]
+Store_DF = []
 
 
 #list the uploaded datasets
@@ -32,7 +34,17 @@ def datasets():
         ret.append(Store_DF[i].name)
     return ret
 
-#@app.post("/datasets/")
+@app.post("/datasets/")
+def upload_file(file : UploadFile):
+    global index
+    ret = Dataset()
+    index+=1
+    namelist = file.filename.split(".")
+    name = namelist[0]
+    ret.name = name
+    ret.dataframe = pandas.read_csv(file.filename)
+    Store_DF.append(ret)
+    return ret.id_ds
 
 #return the file name, and size of the dataset object
 @app.get("/datasets/{id}/")
