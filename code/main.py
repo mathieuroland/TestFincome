@@ -13,6 +13,10 @@ app = typer.Typer()
 def get_all():
     return api.datasets(Store_DF)
 
+#@app.command()
+#def add(file : File):
+#    return api.upload_file(file,Store_DF)
+
 @app.command()
 def get_one(id : int):
     return api.name(id, Store_DF)
