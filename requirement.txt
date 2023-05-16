@@ -3,3 +3,4 @@ numpy
 request
 uvicorn
 openpyxlsx
+typer
